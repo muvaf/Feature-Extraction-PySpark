@@ -13,15 +13,18 @@ def extract_difficulty(*durations):
 
     return "Unknown"
 
+def add_difficulty_feature(df):
+    udf_extract_difficulty = udf(extract_difficulty, returnType=StringType())
+    difficultyAddedDf = df.withColumn("difficulty", udf_extract_difficulty("prepTime_minutes", "cookTime_minutes"))
+
+    return difficultyAddedDf
+
 def analyze(sc, args):
   print("Feature Extraction is running")
   sqlContext = SQLContext(sc)
-  filePath = "durationParsedData.parquet"
+  filePath = args[0]
   preprocessedDf = sqlContext.read.load(filePath)
-
-  udf_extract_difficulty = udf(extract_difficulty, returnType=StringType())
-  difficultyAddedDf = preprocessedDf.withColumn("difficulty", udf_extract_difficulty("prepTimeMinutes", "cookTimeMinutes"))
-
-  difficultyAddedDf.write.save("featurizedData.parquet")
-  
+  difficultyAddedDf = add_difficulty_feature(preprocessedDf)
+  difficultyAddedDf.show()
+  difficultyAddedDf.write.save("feature_extraction_result.parquet")
   return difficultyAddedDf

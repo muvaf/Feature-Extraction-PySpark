@@ -1,4 +1,4 @@
-build:
+production:
 	pip install -r requirements.txt -t ./src/libs
 	rm -rf dist && mkdir -p ./dist
 	cp ./src/main.py ./dist

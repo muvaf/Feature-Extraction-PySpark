@@ -3,18 +3,25 @@ from pyspark.sql.functions import udf
 from pyspark.sql.types import *
 import isodate
 
-def parse_duration_columns(isodate_str):
+def parse_iso_duration(isodate_str):
     return isodate.parse_duration(isodate_str).seconds/60
 
-def analyze(sc, args):
-  print("Preprocess is running")
-  sqlContext = SQLContext(sc)
-  filePath = "./data/recipes.json"
-  rawDf = sqlContext.read.json(filePath)
-  udf_duration_parse = udf(parse_duration_columns, returnType=FloatType())
-  filteredDf = rawDf.filter(rawDf.ingredients.like("%Chilies%") | rawDf.ingredients.like("%Chiles%") | rawDf.ingredients.like("%Chili%"))
-  prepTimeParsedDf = filteredDf.withColumn("prepTimeMinutes", udf_duration_parse("prepTime")).drop("prepTime")
-  cookTimeParsedDf = prepTimeParsedDf.withColumn("cookTimeMinutes", udf_duration_parse("cookTime")).drop("cookTime")
+def parse_duration_columns(df, columns):
+    udf_duration_parse = udf(parse_iso_duration, returnType=FloatType())
+    parsedDf = df
+    for column in columns:
+        parsedDf = parsedDf.withColumn(column + "_minutes", udf_duration_parse(column))
+    return parsedDf
 
-  cookTimeParsedDf.write.save("durationParsedData.parquet")
-  return cookTimeParsedDf
+def filter_with_keyword(df, column, keyword):
+    return df.filter(df[column].like("%" + keyword + "%"))
+
+def analyze(sc, args):
+  sqlContext = SQLContext(sc)
+  filePath = args[0]
+  rawDf = sqlContext.read.json(filePath)
+  filteredDf = filter_with_keyword(rawDf, "ingredients", "Chilies")
+  parsedDf = parse_duration_columns(filteredDf, ["prepTime", "cookTime"])
+
+  parsedDf.write.save("preprocess_result.parquet")
+  return parsedDf
