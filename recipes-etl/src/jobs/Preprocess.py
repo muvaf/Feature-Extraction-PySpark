@@ -1,4 +1,3 @@
-from pyspark.sql import SQLContext
 from pyspark.sql.functions import udf
 from pyspark.sql.types import *
 import isodate
@@ -16,8 +15,7 @@ def parse_duration_columns(df, columns):
 def filter_with_keyword(df, column, keyword):
     return df.filter(df[column].like("%" + keyword + "%"))
 
-def analyze(sc, args):
-  sqlContext = SQLContext(sc)
+def analyze(sc, sqlContext, args):
   filePath = args[0]
   rawDf = sqlContext.read.json(filePath)
   filteredDf = filter_with_keyword(rawDf, "ingredients", "Chilies")

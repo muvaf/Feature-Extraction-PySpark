@@ -1,4 +1,3 @@
-from pyspark.sql import SQLContext
 from pyspark.sql.functions import udf
 from pyspark.sql.types import *
 
@@ -19,12 +18,10 @@ def add_difficulty_feature(df):
 
     return difficultyAddedDf
 
-def analyze(sc, args):
-  print("Feature Extraction is running")
-  sqlContext = SQLContext(sc)
+def analyze(sc, sqlContext, args):
   filePath = args[0]
   preprocessedDf = sqlContext.read.load(filePath)
   difficultyAddedDf = add_difficulty_feature(preprocessedDf)
-  difficultyAddedDf.show()
+
   difficultyAddedDf.write.save("feature_extraction_result.parquet")
   return difficultyAddedDf

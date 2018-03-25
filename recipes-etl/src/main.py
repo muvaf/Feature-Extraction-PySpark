@@ -1,5 +1,6 @@
 import os, sys, argparse, importlib
 from pyspark import SparkContext, SparkConf
+from pyspark.sql import SQLContext
 
 if os.path.exists('jobs.zip'):
     sys.path.insert(0, 'jobs.zip')
@@ -14,5 +15,6 @@ args = parser.parse_args()
 # TODO: Make it runnable on YARN
 spark_conf = SparkConf().setAppName(args.job)
 sc = SparkContext(conf=spark_conf)
+sqlContext = SQLContext(sc)
 job_module = importlib.import_module('jobs.%s' % args.job)
-job_module.analyze(sc, args.job_args)
+job_module.analyze(sc, sqlContext, args.job_args)
