@@ -2,6 +2,7 @@ from pyspark.sql.functions import udf
 from pyspark.sql.types import *
 import isodate
 
+output_path = "output/preprocess_result.parquet"
 def parse_iso_duration(isodate_str):
     if isodate_str == None or isodate_str == "":
         return None
@@ -9,19 +10,19 @@ def parse_iso_duration(isodate_str):
 
 def parse_duration_columns(df, columns):
     udf_duration_parse = udf(parse_iso_duration, returnType=FloatType())
-    parsedDf = df
+    parsed_df = df
     for column in columns:
-        parsedDf = parsedDf.withColumn(column + "_minutes", udf_duration_parse(column))
-    return parsedDf
+        parsed_df = parsed_df.withColumn(column + "_minutes", udf_duration_parse(column))
+    return parsed_df
 
 def filter_with_keyword(df, column, keyword):
     return df.filter(df[column].like("%" + keyword + "%"))
 
 def analyze(sc, sqlContext, args):
   filePath = args[0]
-  rawDf = sqlContext.read.json(filePath)
-  filteredDf = filter_with_keyword(rawDf, "ingredients", "Chilies")
-  parsedDf = parse_duration_columns(filteredDf, ["prepTime", "cookTime"])
+  raw_df = sqlContext.read.json(filePath)
+  filtered_df = filter_with_keyword(raw_df, "ingredients", "Chilies")
+  parsed_df = parse_duration_columns(filtered_df, ["prepTime", "cookTime"])
 
-  parsedDf.write.save("output/preprocess_result.parquet")
-  return parsedDf
+  parsed_df.write.save(output_path)
+  return output_path

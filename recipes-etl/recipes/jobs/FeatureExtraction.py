@@ -2,6 +2,8 @@ from pyspark.sql.functions import udf
 from pyspark.sql.types import *
 import numbers
 
+output_path = "output/feature_extraction_result.parquet"
+
 def extract_difficulty(*durations):
     if False in [isinstance(x, numbers.Number) for x in durations] or len(durations) == 0:
         return "Unknown"
@@ -26,5 +28,5 @@ def analyze(sc, sqlContext, args):
   preprocessedDf = sqlContext.read.load(filePath)
   difficultyAddedDf = add_difficulty_feature(preprocessedDf)
 
-  difficultyAddedDf.write.save("output/feature_extraction_result.parquet")
-  return difficultyAddedDf
+  difficultyAddedDf.write.save(output_path)
+  return output_path
