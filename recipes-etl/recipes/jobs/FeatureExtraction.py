@@ -1,7 +1,10 @@
 from pyspark.sql.functions import udf
 from pyspark.sql.types import *
+import numbers
 
 def extract_difficulty(*durations):
+    if False in [isinstance(x, numbers.Number) for x in durations] or len(durations) == 0:
+        return "Unknown"
     total_minutes = sum(durations)
     if total_minutes > 60:
         return "Hard"
