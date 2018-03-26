@@ -1,5 +1,6 @@
 from test.shared.PySparkTestCase import PySparkTestCase
 from recipes.jobs.Preprocess import *
+from pyspark.sql.types import *
 
 class PreprocessTest(PySparkTestCase):
 
@@ -11,7 +12,33 @@ class PreprocessTest(PySparkTestCase):
         for row in result_list:
             self.assertTrue(row.ingredients.find("Chilies") != -1)
 
+    def test_parse_duration_columns(self):
+        list_of_entries = [("name1", "PT5M", "PT10M"),("name2", "PT", "PT10M"),("name3", "PT1H", "PT"),("name4", "PT1H", "PT12H"),("name5", "PT", "PT"), ("name6", None, None)]
+        schema_for_df = StructType([StructField("name", StringType(), True),StructField("prepTime", StringType(), True),StructField("cookTime", StringType(), True)])
+        sample_rdd = self.sc.parallelize(list_of_entries)
+        sample_df = self.sqlContext.createDataFrame(sample_rdd, schema_for_df)
 
+        parsed_df = parse_duration_columns(sample_df, ["prepTime", "cookTime"])
+        result_list = parsed_df.collect()
+        for row in result_list:
+            if row.name == "name1":
+                self.assertEqual(row.prepTime_minutes, 5.0)
+                self.assertEqual(row.cookTime_minutes, 10.0)
+            elif row.name == "name2":
+                self.assertEqual(row.prepTime_minutes, 0.0)
+                self.assertEqual(row.cookTime_minutes, 10.0)
+            elif row.name == "name3":
+                self.assertEqual(row.prepTime_minutes, 60.0)
+                self.assertEqual(row.cookTime_minutes, 0.0)
+            elif row.name == "name4":
+                self.assertEqual(row.prepTime_minutes, 60.0)
+                self.assertEqual(row.cookTime_minutes, 720.0)
+            elif row.name == "name5":
+                self.assertEqual(row.prepTime_minutes, 0.0)
+                self.assertEqual(row.cookTime_minutes, 0.0)
+            elif row.name == "name6":
+                self.assertEqual(row.prepTime_minutes, None)
+                self.assertEqual(row.cookTime_minutes, None)
 
 if __name__ == '__main__':
     unittest.main()

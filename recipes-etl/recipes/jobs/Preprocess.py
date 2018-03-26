@@ -3,6 +3,8 @@ from pyspark.sql.types import *
 import isodate
 
 def parse_iso_duration(isodate_str):
+    if isodate_str == None or isodate_str == "":
+        return None
     return isodate.parse_duration(isodate_str).seconds/60
 
 def parse_duration_columns(df, columns):
