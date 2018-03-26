@@ -12,7 +12,6 @@ parser.add_argument('--job', type=str, required=True)
 parser.add_argument('--job-args', nargs='*')
 args = parser.parse_args()
 
-# TODO: Make it runnable on YARN
 spark_conf = SparkConf().setAppName(args.job)
 sc = SparkContext(conf=spark_conf)
 sqlContext = SQLContext(sc)

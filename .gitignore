@@ -1,5 +1,6 @@
 # Project-specific
 libs/
+metastore_db
 
 .DS_Store
 # Byte-compiled / optimized / DLL files
