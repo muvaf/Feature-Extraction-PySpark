@@ -1,12 +1,12 @@
 
 # Requested output schema is likely to be defined by the client.
 outputFields = ["name", "ingredients", "url", "image", "cookTime", "recipeYield", "datePublished", "prepTime", "description", "difficulty"]
-output_path = "output/output_result.parquet"
+output_path = "output/output.parquet"
+def analyze(sc, sqlContext, args, input_df=None):
+    if input_df == None:
+        filePath = args[0]
+        input_df = sqlContext.read.load(filePath)
+    output_df = input_df.select(outputFields)
 
-def analyze(sc, sqlContext, args):
-  filePath = args[0]
-  preprocessedDf = sqlContext.read.load(filePath)
-  output_df = preprocessedDf.select(outputFields)
-
-  output_df.write.save(output_path)
-  return output_path
+    output_df.write.save(output_path)
+    return output_path

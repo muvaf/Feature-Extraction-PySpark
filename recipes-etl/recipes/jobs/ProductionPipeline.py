@@ -2,8 +2,8 @@ from jobs import Preprocess, FeatureExtraction, OutputPublisher
 
 def analyze(sc, sqlContext, args):
   filePath = args[0]
-  preprocessed_path = Preprocess.analyze(sc, sqlContext, [filePath])
-  feature_extracted_path = FeatureExtraction.analyze(sc, sqlContext, [preprocessed_path])
-  output_path = OutputPublisher.analyze(sc, sqlContext, [feature_extracted_path])
+  preprocessed_df = Preprocess.analyze(sc, sqlContext, [filePath])
+  feature_extracted_df = FeatureExtraction.analyze(sc, sqlContext, [], input_df=preprocessed_df)
+  output_path = OutputPublisher.analyze(sc, sqlContext, [], input_df=feature_extracted_df)
 
   return output_path

@@ -2,7 +2,6 @@ from pyspark.sql.functions import udf
 from pyspark.sql.types import *
 import isodate
 
-output_path = "output/preprocess_result.parquet"
 def parse_iso_duration(isodate_str):
     if isodate_str == None or isodate_str == "":
         return None
@@ -18,11 +17,11 @@ def parse_duration_columns(df, columns):
 def filter_with_keyword(df, column, keyword):
     return df.filter(df[column].like("%" + keyword + "%"))
 
-def analyze(sc, sqlContext, args):
-  filePath = args[0]
-  raw_df = sqlContext.read.json(filePath)
-  filtered_df = filter_with_keyword(raw_df, "ingredients", "Chilies")
-  parsed_df = parse_duration_columns(filtered_df, ["prepTime", "cookTime"])
+def analyze(sc, sqlContext, args, input_df=None):
+    if input_df == None:
+        filePath = args[0]
+        input_df = sqlContext.read.json(filePath)
+    filtered_df = filter_with_keyword(input_df, "ingredients", "Chilies")
+    parsed_df = parse_duration_columns(filtered_df, ["prepTime", "cookTime"])
 
-  parsed_df.write.save(output_path)
-  return output_path
+    return parsed_df
