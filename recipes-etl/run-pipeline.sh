@@ -6,7 +6,7 @@ while [[ $# -gt 0 ]]
 do
 key="$1"
 case $key in
-    -u|--url)
+    -m|--master)
     MASTER_URL="$2"
     shift # past argument
     shift # past value
