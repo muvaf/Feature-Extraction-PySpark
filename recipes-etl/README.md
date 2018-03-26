@@ -47,8 +47,7 @@ python -m unittest discover
 ```
 ## Integration Test
 
-Integration test checks if the output produced is the same with the expected output located in `test/data/expected_output.parquet`. To run the integration test for the requested case:
+Integration test checks if the output produced (resides in `dist/output/output_result.parquet`) is the same with the expected output located in `test/data/expected_output.parquet`. To run the integration test for the requested case:
 ```
-make production
-./run-integration-test.sh
+python test/integration-test-check.py --expected test/data/expected_output.parquet --actual dist/output/output.parquet
 ```
