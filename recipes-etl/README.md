@@ -19,7 +19,13 @@ make production
 ```
 Command above will run by default on local using all the cores available.
 You can use `--url` argument to pass a YARN master node url and `--input` argument to pass another data source.
+Try to use double-quotes with the arguments since some characters might get misread such as brackets in 'local[4]'
 
 Keep in mind that the root directory when running is `dist` folder, so when you specify a data source, you either need to specify an absolute path or a path that is relative to `dist` folder
+
+Example with different data source and url:
+```
+./run-pipeline.sh --url "local[2]" --input "/Users/foo/Desktop/recipes.json"
+```
 
 Output will be on `dist/output/output_result.parquet`
