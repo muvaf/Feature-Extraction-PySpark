@@ -2,7 +2,7 @@
 
 Versions of packages:
 * Apache Spark 1.6.0
-* Python 3.5.2
+* Python 3.5.2 (3.6 will not work since it is supported by Spark 2.1.0 and upper versions)
 
 ## How to run?
 
