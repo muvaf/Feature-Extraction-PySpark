@@ -12,21 +12,6 @@ export SPARK_HOME=/usr/local/spark
 export PYTHONPATH=$SPARK_HOME/python/:$SPARK_HOME/python/lib/py4j-0.9-src.zip:$PYTHONPATH
 ```
 
-## Unit Tests
-
-To run unit tests:
-```
-make libs
-python -m unittest discover
-```
-## Integration Test
-
-Integration test checks if the output produced is the same with the expected output located in `test/data/expected_output.parquet`. To run the integration test for the requested case:
-```
-make production
-./run-integration-test.sh
-```
-
 ## Production Pipeline
 
 To run production pipeline as requested by the question:
@@ -45,10 +30,25 @@ Example with different data source and url:
 ./run-pipeline.sh --master "local[2]" --input "/Users/foo/Desktop/recipes.json"
 ```
 
+Output is written to `dist/output/output_result.parquet`
+
 ### On YARN
 Dependencies and job modules are packaged together in zip files. So, all nodes will have the same source code and modules in a cluster. To run on a YARN custer:
 ```
 ./run-pipeline.sh --master yarn --input "/Users/foo/Desktop/recipes.json"
 ```
 
-Output will be on `dist/output/output_result.parquet`
+## Unit Tests
+
+To run unit tests:
+```
+make libs
+python -m unittest discover
+```
+## Integration Test
+
+Integration test checks if the output produced is the same with the expected output located in `test/data/expected_output.parquet`. To run the integration test for the requested case:
+```
+make production
+./run-integration-test.sh
+```
