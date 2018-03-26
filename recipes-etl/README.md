@@ -20,7 +20,7 @@ make production
 ./run-pipeline.sh
 ```
 Command above will run by default on local using all the cores available.
-You can use `--master` argument to pass a YARN master node url and `--input` argument to pass another data source.
+You can use `--master` argument to pass a master and `--input` argument to pass another data source.
 Try to use double-quotes with the arguments since some characters might get misread such as brackets in 'local[4]'
 
 Keep in mind that the root directory when running is `dist` folder, so when you specify a data source, you either need to specify an absolute path or a path that is relative to `dist` folder
@@ -33,9 +33,9 @@ Example with different data source and url:
 Output is written to `dist/output/output_result.parquet`
 
 ### On YARN
-Dependencies and job modules are packaged together in zip files. So, all nodes will have the same source code and modules in a cluster. To run on a YARN custer:
+Dependencies and job modules are packaged together in zip files. So, all nodes will have the same source code and modules in a cluster. To run on a YARN custer, specify `--master` as `yarn`:
 ```
-./run-pipeline.sh --master yarn --input "/Users/foo/Desktop/recipes.json"
+./run-pipeline.sh --master yarn
 ```
 
 ## Unit Tests
