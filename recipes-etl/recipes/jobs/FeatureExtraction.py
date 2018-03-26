@@ -26,5 +26,5 @@ def analyze(sc, sqlContext, args):
   preprocessedDf = sqlContext.read.load(filePath)
   difficultyAddedDf = add_difficulty_feature(preprocessedDf)
 
-  difficultyAddedDf.write.save("feature_extraction_result.parquet")
+  difficultyAddedDf.write.save("output/feature_extraction_result.parquet")
   return difficultyAddedDf

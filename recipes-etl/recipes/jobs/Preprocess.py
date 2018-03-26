@@ -23,5 +23,5 @@ def analyze(sc, sqlContext, args):
   filteredDf = filter_with_keyword(rawDf, "ingredients", "Chilies")
   parsedDf = parse_duration_columns(filteredDf, ["prepTime", "cookTime"])
 
-  parsedDf.write.save("preprocess_result.parquet")
+  parsedDf.write.save("output/preprocess_result.parquet")
   return parsedDf
