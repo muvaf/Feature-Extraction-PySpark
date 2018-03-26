@@ -44,7 +44,9 @@ Example with different data source and url:
 ```
 ./run-pipeline.sh --master "local[2]" --input "/Users/foo/Desktop/recipes.json"
 ```
-Run on a YARN custer:
+
+### On YARN
+Dependencies and job modules are packaged together in zip files. So, all nodes will have the same source code and modules in a cluster. To run on a YARN custer:
 ```
 ./run-pipeline.sh --master yarn --input "/Users/foo/Desktop/recipes.json"
 ```
