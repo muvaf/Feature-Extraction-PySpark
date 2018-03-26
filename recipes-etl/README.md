@@ -6,6 +6,11 @@ Versions of packages:
 
 ## How to run?
 
+You need to run the following to set the environment variables for unit tests to find pyspark module, if not set:
+```
+export SPARK_HOME=/usr/local/spark
+export PYTHONPATH=$SPARK_HOME/python/:$SPARK_HOME/python/lib/py4j-0.9-src.zip:$PYTHONPATH
+```
 
 To run unit tests:
 ```

@@ -4,17 +4,22 @@ from pyspark.sql.types import *
 
 class PreprocessTest(PySparkTestCase):
 
-    def test_filter_with_keyword(self):
-        sample_df = self.sqlContext.read.json("test/data/sample-data.json")
-        filtered_df = filter_with_keyword(sample_df, "ingredients", "Chilies")
+    def test_filter_with_regex(self):
+        list_of_entries = [("name1", "a little bit enchiliada"),("name2", "some chili"),("name3", "more Chilies "),("name4", "salad with chiles"),("name5", "more of hilies"),("name6", "additional chilies")]
+        schema_for_df = StructType([StructField("name", StringType(), True),StructField("ingredients", StringType(), True)])
+        sample_rdd = self.sc.parallelize(list_of_entries)
+        sample_df = self.sqlContext.createDataFrame(sample_rdd, schema_for_df)
+        passed_entries = ["name2", "name3", "name4", "name6"]
+        
+        filtered_df = filter_with_regex(sample_df, "ingredients", "[^a-zA-Z][cC][hH][iI][lL][iesIES]")
         result_list = filtered_df.collect()
-        self.assertEqual(len(result_list), 3)
+        self.assertEqual(len(result_list), 4)
         for row in result_list:
-            self.assertTrue(row.ingredients.find("Chilies") != -1)
+            self.assertTrue(row.name in passed_entries)
 
         empty_rdd = self.sc.parallelize([])
         empty_df = self.sqlContext.createDataFrame(empty_rdd, sample_df.schema)
-        filtered_df = filter_with_keyword(empty_df, "ingredients", "Chilies")
+        filtered_df = filter_with_regex(empty_df, "ingredients", "[^a-zA-Z][cC][hH][iI][lL][iesIES]")
         result_list = filtered_df.collect()
         self.assertEqual(len(result_list), 0)
 
