@@ -1,4 +1,6 @@
-# Hellofresh Take Home Q2
+# Feature Extraction Example with Apache Spark
+
+This project serves as an example of how a production pipeline model could be built using best practices. It includes only feature extraction part, but other parts could easily be added.
 
 Versions of packages:
 * Apache Spark 1.6.0
